@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang='en'>
+	<head>
+		<title>Room Occupancy Detection System</title>
+		<style type="text/css">
+			* {
+				font-family: sans-serif;
+			}
+			.footer {
+				position: fixed;
+				left: 0;
+				bottom: 0;
+				width: 100%;
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<div align="center">
+		<h1 align="center">Room Occupancy Detection System</h1>
+		<form method="post" id="form" align="center">
+			<div>
+			<button id="btn_start_test">Detect Occupancy</button>
+			<div id="img_loading" style="display: none;">
+				<img src="https://www.sanadig.com/img/pleaseWaitOverlay.gif" alt="Loading Image">
+			</div>
+		</div>
+		</form>
+
+		<div id="test_result" style="display: none;">
+			<h1 id="leakage_label" align="center"></h1>
+			<img id="test_result_img_id" style="width:500px;height:400px;">
+		</div>
+	</div>
+
+	<div class="footer">
+		<footer>
+			<p>Powered by: Xavor Corporation</p>
+			<img style="width:100px;height:100px;" src="https://static2.clutch.co/sites/default/files/logos/xavor_logo.png" alt="Xavor Corporation">
+		  </footer>
+
+	</div>
+		<!-- <div id="test_result_pass"  style="display: none;">
+			<h1 id="leakage_label_pass" align="center"></h1>
+			<img style="width:500px;height:500px;" class="center" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Ski_trail_rating_symbol-green_circle.svg/2000px-Ski_trail_rating_symbol-green_circle.svg.png">
+		</div>
+		<div id="test_result_fail"  style="display: none;">
+				<h1 id="leakage_label_fail" align="center"></h1>
+				<img style="width:500px;height:500px;" class="center" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Rond_rouge.png">
+		</div> -->
+		
+		
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+		<script>
+			$('#form').on('submit', function(e){
+				$('#btn_start_test').prop('disabled', true);
+				$('#img_loading').show();
+				$('#test_result').hide();
+				$('#test_result_img_id').attr("src","");
+				// $('#test_result_pass').hide();
+				// $('#test_result_fail').hide();
+				var number = $('#num').val();
+				e.preventDefault();
+				$.ajax({
+					url: 'http://localhost:4000/run_test/',
+					method: 'POST',
+					success: function(data) {
+						$('#img_loading').hide();
+						$('#test_result').show();
+						$('#btn_start_test').prop('disabled', false);
+						if(data['occupied']=='1'){
+							$('#leakage_label').html('Room Occupied')
+							$('#leakage_label').css({ 'color': 'red', 'font-size': '150%' })
+							$('#test_result_img_id').attr("src","https://upload.wikimedia.org/wikipedia/commons/a/ac/Rond_rouge.png");
+							// $('#test_result_fail').show();
+							// $('#test_result_pass').hide();
+						}
+						else{
+							$('#leakage_label').html('Room not Occupied')
+							$('#leakage_label').css({ 'color': 'green', 'font-size': '150%' })
+							$('#test_result_img_id').attr("src","https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Ski_trail_rating_symbol-green_circle.svg/2000px-Ski_trail_rating_symbol-green_circle.svg.png");
+							// $('#test_result_pass').show();
+							// $('#test_result_fail').hide();
+						}
+							
+					}
+				});
+			});
+		</script>
+	</body>
+</html>
